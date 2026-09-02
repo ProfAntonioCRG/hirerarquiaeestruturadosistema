@@ -1,6 +1,12 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Desenvolvimento de Sistemas | Araucária</title><link rel="stylesheet" href="style.css"></head>
-<body><header><div><span class="tag">PARANÁ • ARAUCÁRIA</span><h1>Desenvolvimento de Sistemas</h1><p>Curso Técnico Integrado ao Ensino Médio</p></div><div class="header-actions"><button class="secondary-btn" onclick="openStudentLogin()">🎓 Login do Aluno</button><button onclick="openAdminLogin()">🔐 Login Administrativo</button></div></header>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Desenvolvimento de Sistemas | Araucária</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div><span class="tag">PARANÁ • ARAUCÁRIA</span><h1>Desenvolvimento de Sistemas</h1><p>Curso Técnico Integrado ao Ensino Médio</p></div><div class="header-actions"><button class="secondary-btn" onclick="openStudentLogin()">🎓 Login do Aluno</button><button onclick="openAdminLogin()">🔐 Login Administrativo</button></div></header>
 <nav><a href="#inicio">Início</a><a href="#curso">O Curso</a><a href="#equipe">Equipe</a><a href="#agenda">Horários</a><a href="#avisos">Avisos & Notícias</a><a href="#aluno">Participação</a></nav>
 <main><section id="inicio" class="hero"><div><span class="pill">FORMAÇÃO • TECNOLOGIA • PROJETOS</span><h2>Aprender tecnologia é <em>construir soluções.</em></h2><p>Um espaço para apresentar o curso de Desenvolvimento de Sistemas, projetos, professores, horários, comunicados e atividades da comunidade escolar.</p><a class="cta" href="#curso">Conheça o curso ↓</a></div><div class="hero-card"><b>Professor</b><strong>Antonio Carlos</strong><span>Desenvolvimento de Sistemas</span><small>Araucária • Paraná</small></div></section>
 <section id="curso"><div class="section-head"><span>01 / O CURSO</span><h2>Do problema ao sistema.</h2></div><div class="cards"><article><b>01</b><h3>Programação</h3><p>HTML, CSS, JavaScript, lógica e desenvolvimento de aplicações.</p></article><article><b>02</b><h3>Projetos</h3><p>Aprendizagem prática, protótipos, banco de dados e soluções digitais.</p></article><article><b>03</b><h3>Tecnologia</h3><p>Hardware, redes, sistemas operacionais, robótica e inovação.</p></article></div></section>
@@ -8,5 +14,7 @@
 <section id="agenda"><div class="section-head"><span>03 / ROTINA</span><h2>Horários da escola</h2></div><div id="schedule" class="schedule"></div></section>
 <section id="avisos"><div class="section-head"><span>04 / MURAL</span><h2>Informativos e tecnologia</h2></div><div id="posts" class="posts"></div></section>
 <section id="aluno" class="participate"><div><span>05 / PARTICIPE</span><h2>Quer participar de uma atividade?</h2><p>O conteúdo é público. Para comentar ou participar de uma atividade, o aluno informa seus dados básicos no formulário.</p></div><form id="studentForm"><input name="name" placeholder="Nome completo" required><input name="email" type="email" placeholder="E-mail"><select name="year" required><option value="">Ano do Ensino Médio</option><option>1º ano</option><option>2º ano</option><option>3º ano</option></select><input name="course" value="Desenvolvimento de Sistemas" required><button>Participar</button><div id="studentMsg"></div></form></section></main>
-<footer>Curso de Desenvolvimento de Sistemas • Araucária/PR • Demonstração educacional<br>Professor Antonio Carlos</footer>
-<div id="modal" class="modal"><div class="modal-box"><button class="close" onclick="closeLogin()">×</button><h2 id="loginTitle">Login</h2><p id="loginDescription">Acesse o sistema com seu perfil.</p><select id="loginUser"></select><button onclick="enterPanel()" id="loginButton">Entrar</button><div id="panel" hidden></div></div></div><script src="app.js"></script></body></html>
+<footer>Curso de Desenvolvimento de Sistemas • Araucária/PR • Portal educacional<br>Professor Antonio Carlos</footer>
+<div id="modal" class="modal"><div class="modal-box"><button class="close" onclick="closeLogin()">×</button><h2 id="loginTitle">Login</h2><p id="loginDescription">Acesse o sistema com seu perfil.</p><input id="loginEmail" type="email" placeholder="E-mail" autocomplete="username"><input id="loginPassword" type="password" placeholder="Senha" autocomplete="current-password"><button onclick="enterPanel()" id="loginButton">Entrar</button><div id="loginMsg"></div><div id="panel" hidden></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="app.js"></script>
+</body></html>
