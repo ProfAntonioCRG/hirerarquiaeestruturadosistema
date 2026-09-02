@@ -1,0 +1,8 @@
+{
+  "name": "curso-desenvolvimento-sistemas-araucaria",
+  "version": "1.0.0",
+  "description": "Portal demonstrativo do Curso Técnico em Desenvolvimento de Sistemas do Paraná - Araucária/PR",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "dev": "node server.js" },
+  "dependencies": { "express": "^4.21.2", "better-sqlite3": "^11.8.1", "cors": "^2.8.5" }
+}
