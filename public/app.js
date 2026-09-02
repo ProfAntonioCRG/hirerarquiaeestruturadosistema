@@ -6,18 +6,11 @@ const demoUsers=[
 {id:3,name:'Coordenação do Curso',role:'Coordenador',email:'coordenacao@escola.pr.gov.br',course:'Equipe docente e turmas'},
 {id:4,name:'Antonio Carlos',role:'Professor',email:'antonio.carlos@escola.pr.gov.br',course:'3º ano',disciplines:'HTML, CSS, JavaScript, Backend e Projetos'},
 {id:5,name:'Aluno Exemplo',role:'Aluno',email:'aluno@escola.pr.gov.br',course:'1º ano'}];
-const demoSchedule=[
-{day:'Segunda',start:'07:30',end:'12:00',activity:'Aulas e atividades do curso'},
-{day:'Terça',start:'07:30',end:'12:00',activity:'Aulas e projetos'},
-{day:'Quarta',start:'07:30',end:'12:00',activity:'Laboratório de Desenvolvimento'},
-{day:'Quinta',start:'07:30',end:'12:00',activity:'Programação e tecnologia'},
-{day:'Sexta',start:'07:30',end:'12:00',activity:'Projetos e atividades integradoras'}];
-const demoPosts=[
-{type:'Informativo',title:'Bem-vindo ao Curso de Desenvolvimento de Sistemas',content:'Espaço público para comunicados, projetos, atividades e notícias de tecnologia.',author:'Direção da Escola'},
-{type:'Tecnologia',title:'Aprendizagem prática e projetos',content:'Os estudantes desenvolvem soluções utilizando programação, banco de dados, web, hardware e robótica.',author:'Antonio Carlos'}];
-let users=[];let onlineBackend=true;
+const demoSchedule=[{day:'Segunda',start:'07:30',end:'12:00',activity:'Aulas e atividades do curso'},{day:'Terça',start:'07:30',end:'12:00',activity:'Aulas e projetos'},{day:'Quarta',start:'07:30',end:'12:00',activity:'Laboratório de Desenvolvimento'},{day:'Quinta',start:'07:30',end:'12:00',activity:'Programação e tecnologia'},{day:'Sexta',start:'07:30',end:'12:00',activity:'Projetos e atividades integradoras'}];
+const demoPosts=[{type:'Informativo',title:'Bem-vindo ao Curso de Desenvolvimento de Sistemas',content:'Espaço público para comunicados, projetos, atividades e notícias de tecnologia.',author:'Direção da Escola'},{type:'Tecnologia',title:'Aprendizagem prática e projetos',content:'Os estudantes desenvolvem soluções utilizando programação, banco de dados, web, hardware e robótica.',author:'Antonio Carlos'}];
+let users=[];let onlineBackend=true;let loginMode='all';
 async function api(url,opt){const r=await fetch(url,{headers:{'Content-Type':'application/json'},...opt});if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
-async function load(){try{users=await api('/api/users')}catch(e){users=JSON.parse(localStorage.getItem('demoUsers')||'null')||demoUsers.map(x=>({...x}));onlineBackend=false}renderUsers();populateLogin();try{await renderSchedule()}catch(e){renderDemoSchedule()}try{await renderPosts()}catch(e){renderDemoPosts()}}
+async function load(){try{users=await api('/api/users')}catch(e){users=JSON.parse(localStorage.getItem('demoUsers')||'null')||demoUsers.map(x=>({...x}));onlineBackend=false}renderUsers();try{await renderSchedule()}catch(e){renderDemoSchedule()}try{await renderPosts()}catch(e){renderDemoPosts()}}
 function renderUsers(){$('#users').innerHTML=users.map(u=>`<article class="person"><span class="role">${esc(u.role)}</span><strong>${esc(u.name)}</strong><small>${esc(u.disciplines||u.course||'')}</small><small>${esc(u.email)}</small></article>`).join('')}
 function slot(x){return `<div class="slot"><b>${esc(x.day)}</b><span>${esc(x.start)} – ${esc(x.end)}</span><span>${esc(x.activity)}</span></div>`}
 async function renderSchedule(){const data=await api('/api/schedule');$('#schedule').innerHTML=data.length?data.map(slot).join(''):'<p>Horários ainda não publicados.</p>'}
@@ -25,10 +18,13 @@ function renderDemoSchedule(){const data=JSON.parse(localStorage.getItem('demoSc
 function postCard(x){return `<article class="post"><span class="type">${esc(x.type)}</span><h3>${esc(x.title)}</h3><p>${esc(x.content)}</p><small>Publicado por ${esc(x.author)}</small></article>`}
 async function renderPosts(){const data=await api('/api/posts');$('#posts').innerHTML=data.length?data.map(postCard).join(''):'<p>Nenhum informativo publicado.</p>'}
 function renderDemoPosts(){const data=JSON.parse(localStorage.getItem('demoPosts')||'null')||demoPosts;$('#posts').innerHTML=data.map(postCard).join('')}
-function populateLogin(){$('#loginUser').innerHTML=users.map(u=>`<option value="${u.id}">${esc(u.name)} — ${esc(u.role)}</option>`).join('')}
-function openLogin(){$('#modal').classList.add('open');$('#panel').hidden=true}
+function populateLogin(){let list=users;if(loginMode==='admin')list=users.filter(u=>u.role!=='Aluno');if(loginMode==='student')list=users.filter(u=>u.role==='Aluno');$('#loginUser').innerHTML=list.map(u=>`<option value="${u.id}">${esc(u.name)} — ${esc(u.role)}</option>`).join('')}
+function openLogin(){openAdminLogin()}
+function openAdminLogin(){loginMode='admin';$('#loginTitle').textContent='Login Administrativo';$('#loginDescription').textContent='Administrador, Diretor, Coordenador e Professor.';$('#loginButton').textContent='Entrar no painel';populateLogin();$('#modal').classList.add('open');$('#panel').hidden=true}
+function openStudentLogin(){loginMode='student';$('#loginTitle').textContent='Login do Aluno';$('#loginDescription').textContent='Acesso do aluno às atividades e área de participação.';$('#loginButton').textContent='Entrar como aluno';populateLogin();$('#modal').classList.add('open');$('#panel').hidden=true}
 function closeLogin(){$('#modal').classList.remove('open')}
-function enterPanel(){const u=users.find(x=>x.id==$('#loginUser').value);if(!u)return;const p=$('#panel');p.hidden=false;let html=`<div class="panel"><p><b>${esc(u.name)}</b> • ${esc(u.role)}</p>`;
+function enterPanel(){const u=users.find(x=>x.id==$('#loginUser').value);if(!u)return;if(loginMode==='admin'&&u.role==='Aluno')return alert('Este acesso é exclusivo para equipe administrativa.');if(loginMode==='student'&&u.role!=='Aluno')return alert('Selecione um usuário aluno.');const p=$('#panel');p.hidden=false;let html=`<div class="panel"><p><b>${esc(u.name)}</b> • ${esc(u.role)}</p>`;
+if(u.role==='Aluno')html+=`<div class="admin-actions"><h3>Área do aluno</h3><p>Bem-vindo! Aqui você poderá consultar comunicados, horários e participar das atividades.</p><a class="cta" href="#aluno" onclick="closeLogin()">Participar de uma atividade</a></div>`;
 if(u.role==='Administrador')html+=`<div class="admin-actions"><h3>Gerenciar hierarquia</h3>${users.map(x=>`<label>${esc(x.name)}: <select onchange="changeRole(${x.id},this.value)"><option ${x.role==='Administrador'?'selected':''}>Administrador</option><option ${x.role==='Diretor'?'selected':''}>Diretor</option><option ${x.role==='Coordenador'?'selected':''}>Coordenador</option><option ${x.role==='Professor'?'selected':''}>Professor</option><option ${x.role==='Aluno'?'selected':''}>Aluno</option></select></label>`).join('')}</div>`;
 if(['Diretor','Administrador'].includes(u.role))html+=`<div class="admin-actions"><h3>Publicar aviso</h3><input id="ptitle" placeholder="Título"><textarea id="pcontent" placeholder="Recado, informativo ou alimentação do dia"></textarea><button onclick="post('${esc(u.name)}','Informativo')">Publicar no frontend</button></div><div class="admin-actions"><h3>Adicionar horário</h3><input id="day" placeholder="Dia (ex.: Segunda)"><input id="start" placeholder="Início (ex.: 07:30)"><input id="end" placeholder="Fim (ex.: 12:00)"><input id="activity" placeholder="Funcionamento / atividade"><button onclick="addSchedule()">Salvar horário</button></div>`;
 if(['Professor','Administrador'].includes(u.role))html+=`<div class="admin-actions"><h3>Professor: cadastrar aluno</h3><input id="sname" placeholder="Nome do aluno"><input id="semail" placeholder="E-mail"><select id="syear"><option>1º ano</option><option>2º ano</option><option>3º ano</option></select><button onclick="addStudent('${esc(u.name)}')">Cadastrar aluno</button></div>`;
